@@ -31,7 +31,7 @@ classes to read and write C2PA objects ("stores"), including a
 [helper class](https://faceless2.github.io/c2pa/docs/com/bfo/box/C2PAHelper.html)
 to deal with embdding them into JPEG.
 While the C2PA format is built on BMFF boxes, those boxes typically contain JSON or CBOR
-and the signature is COSE. So this package makes heavy use of `com.bfo.json` from [https://github.com/faceless2/json]
+and the signature is COSE. So this package makes heavy use of `com.bfo.json` from https://github.com/faceless2/json
 
 The [C2PAStore](https://faceless2.github.io/c2pa/docs/com/bfo/box/C2PAStore.html) class is the top
 level entrypoint into the C2PA package. Here's a quick example showing how to verify C2PA embedded

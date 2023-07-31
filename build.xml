@@ -1,0 +1,95 @@
+<project name="c2pa" default="default">
+  <property name="build.sysclasspath" value="ignore"/>
+  <property file="build.properties"/>
+
+  <property name="description" value="BFO Json API"/>
+  <property name="dist" value="dist"/>		        <!-- where to build the Jars -->
+  <property name="classes.main" value="build/main"/>	<!-- where to compile the classes -->
+  <property name="docs" value="docs"/>
+  <property name="src.main" value="src/main"/>
+  <property name="jar.main" value="${dist}/bfoc2pa-${version}.jar"/>
+  <property name="classes.test" value="build/test"/>	<!-- where to compile the classes -->
+  <property name="src.test" value="src/test"/>
+  <property name="jar.test" value="${dist}/bfoc2pa-test-${version}.jar"/>
+
+  <path id="path.build">
+    <fileset dir="lib" includes="*.jar"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="${classes.main}" />
+    <delete dir="${classes.test}" />
+    <delete dir="${dist}" />
+    <delete dir="${docs}" />
+  </target>
+
+  <target name="build">
+    <mkdir dir="${classes.main}"/>
+    <mkdir dir="${dist}"/>
+    <javac encoding="utf-8" debug="true" source="8" target="8" destdir="${classes.main}">
+      <src path="${src.main}"/>
+      <compilerarg value="-Xlint:unchecked"/>
+      <compilerarg value="-Xlint:rawtypes"/>
+      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:finally"/>
+      <compilerarg value="-Xlint:overrides"/>
+      <classpath refid="path.build" />
+    </javac>
+    <copy todir="${classes.main}">
+      <fileset dir="${src.main}">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${jar.main}" update="false">
+      <fileset dir="${classes.main}" />
+    </jar>
+  </target>
+
+  <target name="javadoc">
+    <mkdir dir="${docs}"/>
+    <condition property="javadoc.additionalparam" value="-notimestamp"><matches pattern="^1.8" string="${java.version}"/></condition>
+    <property name="javadoc.additionalparam" value="-notimestamp --ignore-source-errors"/>
+
+    <javadoc destdir="${docs}" access="public" author="false" version="false" windowtitle="${description} ${version}" charset="UTF-8" encoding="UTF-8" docencoding="UTF-8" additionalparam="${javadoc.additionalparam}" use="true" breakiterator="true">
+      <sourcefiles>
+        <fileset dir="${src.main}"/>
+      </sourcefiles>
+      <doctitle><![CDATA[${description} ${version}]]></doctitle>
+      <header><![CDATA[${description} ${version}]]></header>
+      <link href="https://docs.oracle.com/javase/8/docs/api/"/>
+    </javadoc>
+  </target>
+
+  <target name="test" depends="build">
+    <mkdir dir="${classes.test}"/>
+    <javac encoding="utf-8" debug="true" source="8" target="8" destdir="${classes.test}">
+      <src path="${src.test}"/>
+      <compilerarg value="-Xlint:unchecked"/>
+      <compilerarg value="-Xlint:deprecation"/>
+      <classpath>
+        <pathelement location="${jar.main}"/>
+        <path refid="path.build"/>
+      </classpath>
+    </javac>
+    <copy todir="${classes.test}">
+      <fileset dir="${src.test}">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${jar.test}" update="false">
+      <fileset dir="${classes.test}" />
+    </jar>
+
+    <java classname="com.bfo.box.Test" fork="true">
+      <jvmarg value="-ea"/>
+      <classpath>
+       <pathelement location="${jar.main}"/>
+       <pathelement location="${jar.test}"/>
+       <path refid="path.build"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="default" depends="test,javadoc"></target>
+
+</project>

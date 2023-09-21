@@ -28,7 +28,7 @@ public class C2PA_AssertionThumbnail extends EmbeddedFileContainerBox implements
      * @throws IOException if the thumbnail cannot be read
      */
     public C2PA_AssertionThumbnail(String mediaType, String fileName, InputStream data, boolean claim) throws IOException {
-        super(SUBTYPE, (claim ? "c2pa.thumbnail.claim." : "c2pa.thumbnail.ingredient.") + mediaSubtype(mediaType), fileName, data);
+        super((claim ? "c2pa.thumbnail.claim." : "c2pa.thumbnail.ingredient.") + mediaSubtype(mediaType), mediaType, fileName, data);
     }
 
     private static String mediaSubtype(String mt) {
